@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="reportDetailSpace">
+
+	<typeAlias alias="REPORTDETAIL" type="com.best.domain.ReportDetail" />
+
+	<resultMap class="REPORTDETAIL" id="ALL_PROPERTIES">
+		<result property="reportDetailId" column="report_detail_id" />
+		<result property="reportDetailProjectId" column="report_detail_project_id" />
+		<result property="reportDetailProjectName" column="project_name" />
+		<result property="reportDetailStart" column="report_detail_start" />
+		<result property="reportDetailEnd" column="report_detail_end" />
+		<result property="reportId" column="report_id" />
+		<result property="reportName" column="report_name" />
+		<result property="gmtCreator" column="gmt_creator" />
+		<result property="gmtCreatorName" column="user_name" />
+		<result property="reportProgress" column="report_progress" />
+		<result property="filePath" column="file_path" />
+	</resultMap>
+	
+	<resultMap class="REPORTDETAIL" id="REPORT_END_SORT_PROPERTIES">
+		<result property="reportDetailId" column="report_detail_id" />
+		<result property="reportDetailProjectId" column="report_detail_project_id" />
+		<result property="reportDetailStart" column="report_detail_start" />
+		<result property="reportDetailEnd" column="report_detail_end" />
+		<result property="reportId" column="report_id" />
+		<result property="reportName" column="report_name" />
+		<result property="reportField" column="report_field" />
+		<result property="gmtCreator" column="gmt_creator" />
+		<result property="reportProgress" column="report_progress" />
+		<result property="filePath" column="file_path" />
+		<result property="projectCustomer" column="project_customer" />
+		<result property="projectWareHouse" column="project_warehouse" />
+	</resultMap>
+	
+	<select id="GET_ALL_REPORT_DETAIL" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name,report_name,user_name
+            FROM 
+            	report_detail a LEFT JOIN project b on a.report_detail_project_id=b.project_id LEFT JOIN users c ON a.gmt_creator=c.user_id LEFT JOIN report r ON a. report_id=r.report_id
+            ORDER BY report_detail_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_ALL_REPORT_DETAIL_NON_FINISH" parameterClass="java.lang.String" resultMap="REPORT_END_SORT_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,report_name,report_field,project_customer,project_warehouse
+            FROM 
+            	report_detail a LEFT JOIN report r ON a. report_id=r.report_id LEFT JOIN project b on a.report_detail_project_id=b.project_id
+            where report_progress <100 AND report_detail_end<=#endTime#
+            ORDER BY report_detail_end
+            LIMIT 10
+        ]]>
+	</select>
+	
+	<insert id="ADD_REPORT_DETAIL" parameterClass="REPORTDETAIL">
+		<![CDATA[
+             INSERT INTO 
+            	report_detail (report_detail_project_id,report_detail_start,report_detail_end,report_id,gmt_creator) 
+            VALUES 
+            	(#reportDetailProjectId#,#reportDetailStart#,#reportDetailEnd#,#reportId#,#gmtCreator#)
+        ]]>
+	</insert>
+	
+	<delete id="DELETE_REPORT_DETAIL" parameterClass="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM report_detail
+			WHERE report_detail_id = #reportDetailId#
+		]]>
+	</delete>
+	
+	
+	<update id="UPDATE_REPORT_DETAIL" parameterClass="java.util.Map">
+		<![CDATA[
+			UPDATE 
+				report_detail
+			SET 
+				report_progress = #reportProgress#,
+				file_path = #filePath#
+			WHERE report_detail_id = #reportDetailId#
+		]]>
+	</update>
+	
+
+</sqlMap>

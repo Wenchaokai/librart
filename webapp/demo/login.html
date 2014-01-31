@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>登录页面</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/lib/lib.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/topbar.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/header.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/footer.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/pages/login.css">
+    <script src="../static/js/lib/lib.js"></script>
+    <base target="_self"/>
+</head>
+<body>
+     <div class="doc" id="doc">
+         <div class="topbar" id="topbar">
+             <div class="layout">
+                 <div class="grid">
+                     <div class="mod-toolbar">
+                         <p>你好！<span class="user-name">方健华</span>&nbsp;&nbsp;<a href="./user-manage.html" target="_self" class="login">[账号管理]</a>&nbsp;&nbsp;<a href="./loginout.html" target="_self" class="login">[退出]</a></p>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="header" id="header">
+             <div class="layout">
+                 <div class="grid">
+                     <div class="mod-masthead">
+                         <a href="./index.html"><img src="../static/img/logo.png" /></a>
+                     </div>
+                 </div>
+             </div>
+         </div>
+          <div class="content" id="content">
+               <div class="layout layout-banner">
+                   <div class="grid">
+                       <div class="mod-login">
+                            <div class="content">
+                                <div class="login-box">
+                                    <div class="wrap clearfix">
+                                        <form action="" method="post" id="login-form" class="ui-form">
+                                            <fieldset>
+                                                <legend>用户登录</legend>
+                                                <div class="ui-form-content">
+                                                    <span class="label label-error hide" id="label-error-box"><span class="info">请输入用户名</span></span>
+                                                    <div class="field">
+                                                        <label for="userName" class="label-username">用户名：</label>
+                                                        <input type="text" placeholder="请输入用户名" name="userName" id="userName" class="in">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="pwd" class="label-pwd">密码：</label>
+                                                        <input type="password" placeholder="请输入密码" name="password" id="pwd" class="in">
+                                                    </div>
+                                                    <div class="field" style="padding-left: 0px;height: 30px;">
+                                                        <label class="checkbox">
+                                                            <input type="checkbox"><label class="record">记住用户名</label>
+                                                        </label>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-block btn-primary">登录</button>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="banner">
+
+                                </div>
+                            </div>
+                       </div>
+                   </div>
+               </div>
+
+
+
+          </div>
+
+          <div class="footer clearfix" id="footer">
+                <div class="layout">
+                    <div class="grid">
+                        <div class="mod-footer">
+                            <div class="content">
+                                <p>©2012 800best.com 版权所有 ICP证: 浙B2-20070189</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          </div>
+
+     </div>
+    <script src="../static/js/pages/login.js"></script>
+</body>
+</html>

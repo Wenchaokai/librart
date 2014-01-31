@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="messageSpace">
+
+	<typeAlias alias="MESSAGE" type="com.best.domain.Message" />
+
+	<resultMap class="MESSAGE" id="ALL_PROPERTIES">
+		<result property="messageId" column="message_id" />
+		<result property="userId" column="user_id" />
+		<result property="messageInfo" column="message_info" />
+		<result property="messageLink" column="message_link" />
+		<result property="projectId" column="project_id" />
+	</resultMap>
+	
+	<select id="GET_ALL_MESSAGE" parameterClass="java.lang.Long" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	message
+            WHERE 
+            	user_id=#userId#
+            ORDER BY message_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_ALL_MESSAGE_BY_PROJECT" parameterClass="java.util.List" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	message
+            WHERE 
+            	project_id in
+           ]]>
+			<iterate open="(" close=")" conjunction=",">  
+            	#[]#  
+        	</iterate> 
+        <![CDATA[
+            ORDER BY message_id DESC
+        ]]>
+	</select>
+	
+	<insert id="ADD_MESSAGE" parameterClass="MESSAGE">
+		<![CDATA[
+            INSERT INTO 
+            	message (user_id,message_info,message_link,project_id) 
+            VALUES 
+            	(#userId#,#messageInfo#,#messageLink#,#projectId#)
+        ]]>
+	</insert>
+	
+	<delete id="DELETE_MESSAGE" parameterClass="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM message
+			WHERE message_id = #messageId#
+		]]>
+	</delete>
+	
+
+</sqlMap>

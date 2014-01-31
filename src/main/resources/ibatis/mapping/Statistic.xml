@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="statisticSpace">
+
+	<typeAlias alias="idoStatistic" type="com.best.domain.IdoStatistic" />
+
+	<resultMap class="idoStatistic" id="allProperties">
+		<result property="numCount" column="COUNT" />
+		<result property="dateTime" column="DATETIME" />
+		<result property="wareHouseCode" column="WH_CODE"/>
+	</resultMap>
+	
+	<resultMap class="idoStatistic" id="provinceStatistic">
+		<result property="numCount" column="COUNT" />
+		<result property="dateTime" column="DATETIME" />
+		<result property="province" column="PROVINCE"/>
+	</resultMap>
+	
+	<resultMap class="idoStatistic" id="percentStatistic">
+		<result property="numCount" column="COUNT" />
+		<result property="dateTime" column="DATETIME" />
+		<result property="skuCode" column="SKUCODE"/>
+	</resultMap>
+
+	<select id="SELECT_SKU_WAREHOUSE_IDO" parameterClass="java.util.Map" resultMap="allProperties">
+		<![CDATA[
+			SELECT 
+					COUNT(a.ID) AS COUNT,DATETIME,WH_CODE
+				FROM 
+					(SELECT 
+							to_char(CREATE_TIME,'yyyyMMdd') AS DATETIME,ID,WH_CODE
+						FROM 
+							ECBOSS_LDO
+						WHERE CUSTOMER_CODE=#customerCode# 
+							AND
+								CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+							AND 
+								CREATE_TIME<=(to_date(#endTime#,'yyyyMMdd'))
+			]]>
+						<isNotNull property="wareHouseCodeList" prepend="AND">  
+						        <iterate property="wareHouseCodeList" open="("
+						          close=")" conjunction="or">
+						          WH_CODE=#wareHouseCodeList[]#
+						        </iterate>
+						</isNotNull>
+			<![CDATA[								
+						) a
+			]]>
+			<isNotNull  property="skuCode">
+				<![CDATA[
+					JOIN (
+						SELECT LDO_ID
+						FROM ECBOSS_LDO_ITEM
+						WHERE 
+								SKU_CODE=#skuCode#
+							AND
+								CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+							AND 
+								CREATE_TIME<=(to_date(#endTime#,'yyyyMMdd'))
+						) b
+				ON
+					a.ID=b.LDO_ID
+				]]>
+			</isNotNull>
+		<![CDATA[
+				GROUP BY 
+					WH_CODE,DATETIME
+		]]>
+	</select>
+	
+	<select id="SELECT_SKU_PROVINCE_IDO" parameterClass="java.util.Map" resultMap="provinceStatistic">
+		<![CDATA[
+			SELECT 
+						COUNT(a.ID) AS COUNT,DATETIME,PROVINCE
+					FROM 
+						(SELECT 
+								to_char(CREATE_TIME,'yyyyMMdd') AS DATETIME,ID,CONSIGNEE_PROVINCE as PROVINCE
+							FROM 
+								ECBOSS_LDO
+							WHERE CUSTOMER_CODE=#customerCode# 
+								AND
+									CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+								AND 
+									CREATE_TIME<=(to_date(#endTime#,'yyyyMMdd'))						
+							) a
+				]]>
+				<isNotNull  property="skuCode">
+					<![CDATA[
+						JOIN (
+							SELECT LDO_ID
+							FROM ECBOSS_LDO_ITEM
+							WHERE 
+									SKU_CODE=#skuCode#
+								AND
+									CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+								AND 
+									CREATE_TIME<=(to_date(#endTime#,'yyyyMMdd'))
+							) b
+					ON
+						a.ID=b.LDO_ID
+					]]>
+				</isNotNull>
+			<![CDATA[
+					GROUP BY 
+						PROVINCE,DATETIME
+			]]>
+	</select>
+	
+	
+	<select id="SELECT_SKU_PERCENT_IDO" parameterClass="java.util.Map" resultMap="percentStatistic">
+		<![CDATA[
+			SELECT 
+						COUNT(a.ID) AS COUNT,b.SKU_CODE as SKUCODE,to_char(a.CREATE_TIME,'yyyyMMdd') AS DATETIME
+					FROM 
+				ECBOSS_LDO a JOIN ECBOSS_LDO_ITEM b 
+			ON 
+				a.ID=b.LDO_ID AND a.ID IN (
+				
+				SELECT 
+						ID
+					FROM 
+						(SELECT 
+								ID
+							FROM 
+								ECBOSS_LDO
+							WHERE CUSTOMER_CODE=#customerCode# 
+								AND
+									CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+								AND 
+									CREATE_TIME<=(to_date(#endTime#,'yyyyMMdd'))						
+							) a
+						JOIN (
+							SELECT LDO_ID
+							FROM ECBOSS_LDO_ITEM
+							WHERE 
+									CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+								AND 
+									CREATE_TIME<=(to_date(#endTime#,'yyyyMMdd'))
+					]]>
+								<isNotNull  property="skuCode" prepend="AND">
+									SKU_CODE=#skuCode#
+								</isNotNull>
+					<![CDATA[
+							) b
+					ON
+						a.ID=b.LDO_ID
+						)
+					]]>
+				
+			<![CDATA[
+					GROUP BY 
+						SKU_CODE,to_char(a.CREATE_TIME,'yyyyMMdd')
+			]]>
+	</select>
+	
+</sqlMap>

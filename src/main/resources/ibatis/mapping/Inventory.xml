@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="inventorySpace">
+
+	<typeAlias alias="INVENTORY" type="com.best.domain.Inventory" />
+
+	<resultMap class="INVENTORY" id="ALL_PROPERTIES">
+		<result property="fieldId" column="field_id" />
+		<result property="projectId" column="project_id" />
+		<result property="id" column="id" />
+		<result property="subjectId" column="subject_id" />
+		<result property="dateTime" column="date_time" />
+		<result property="value" column="value" />
+	</resultMap>
+	
+	<select id="GET_INVENTORY" parameterClass="java.util.Map" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	inventory
+            WHERE
+            	field_id =#fieldId#
+            AND project_id = #projectId#
+            AND subject_id = #subjectId#
+            AND date_time = #dateTime#
+            ORDER BY id DESC
+            LIMIT 1
+        ]]>
+	</select>
+	
+	<insert id="ADD_INVENTORY" parameterClass="INVENTORY">
+		<![CDATA[
+             INSERT INTO 
+            	inventory (field_id,project_id,subject_id,date_time,value) 
+            VALUES 
+            	(#fieldId#,#projectId#,#subjectId#,#dateTime#,#value#)
+        ]]>
+	</insert>
+	
+
+</sqlMap>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="subjectSpace">
+
+	<typeAlias alias="SUBJECT" type="com.best.domain.Subject" />
+
+	<resultMap class="SUBJECT" id="ALL_PROPERTIES">
+		<result property="subjectId" column="subject_id" />
+		<result property="subjectName" column="subject_name" />
+		<result property="subjectProjectId" column="subject_project_id" />
+		<result property="subjectDesc" column="subject_desc" />
+		<result property="subjectType" column="subject_type" />
+		<result property="subjectEnabled" column="subject_enabled" />
+		<result property="subjectFormula" column="subject_formula" />
+		<result property="subjectProjectName" column="project_name" />
+		<result property="subjectFormulaTxt" column="subject_formula_txt" />
+		<result property="parentSubjectId" column="parent_subject_id"/>
+		<result property="subjectPrice" column="subject_price"/>
+		<result property="subjectMinPrice" column="subject_min_price"/>
+		<result property="subjectFieldCustom" column="subject_field_custom"/>
+		<result property="subjectNumSum" column="subject_num_sum"/>
+		<result property="userName" column="user_name"/>
+		<result property="modifyTime" column="modify_time"/>
+	</resultMap>
+	
+	<select id="GET_ALL_SUBJECT" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name
+            FROM 
+            	subject a LEFT JOIN project b on a.subject_project_id=b.project_id
+            where subject_type=1 OR (subject_type=2 AND subject_project_id=-1)
+            ORDER BY subject_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_ALL_ENABLE_SUBJECT" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name
+            FROM 
+            	subject a LEFT JOIN project b on a.subject_project_id=b.project_id
+            where subject_project_id!=-1 AND subject_enabled=1
+        ]]>
+	</select>
+	
+	<select id="GET_ALL_SUBJECT_BY_PROJECT_ID" parameterClass="java.lang.Integer"  resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name
+            FROM 
+            	subject a LEFT JOIN project b on a.subject_project_id=b.project_id
+            where subject_project_id=#subjectProjectId#
+            ORDER BY subject_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_SUBJECT" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name
+            FROM 
+            	subject a LEFT JOIN project b on a.subject_project_id=b.project_id
+            WHERE
+            	subject_id =#subjectId#
+        ]]>
+	</select>
+	
+	<insert id="ADD_SUBJECT" parameterClass="SUBJECT">
+		<![CDATA[
+             INSERT INTO 
+            	subject (subject_name,subject_project_id,subject_desc,subject_type,subject_enabled,subject_formula,subject_formula_txt,parent_subject_id,subject_price,subject_min_price,subject_field_custom,subject_num_sum,user_name,modify_time) 
+            VALUES 
+            	(#subjectName#,#subjectProjectId#,#subjectDesc#,#subjectType#,#subjectEnabled#,#subjectFormula#,#subjectFormulaTxt#,#parentSubjectId#,#subjectPrice#,#subjectMinPrice#,#subjectFieldCustom#,#subjectNumSum#,#userName#,#modifyTime#)
+        ]]>
+	</insert>
+	
+	<update id="UPDATE_SUBJECT" parameterClass="SUBJECT">
+		<![CDATA[
+             UPDATE 
+             	subject
+             SET
+             	subject_name = #subjectName#,
+             	subject_project_id = #subjectProjectId#,
+             	subject_desc = #subjectDesc#,
+             	subject_type = #subjectType#,
+             	subject_enabled = #subjectEnabled#,
+             	subject_formula = #subjectFormula#,
+             	subject_formula_txt = #subjectFormulaTxt#,
+             	parent_subject_id = #parentSubjectId#,
+             	subject_price = #subjectPrice#,
+             	subject_min_price = #subjectMinPrice#,
+             	subject_field_custom = #subjectFieldCustom#,
+             	subject_num_sum = #subjectNumSum#,
+             	user_name = #userName#,
+             	modify_time = #modifyTime#
+             WHERE
+             	subject_id = #subjectId#
+        ]]>
+	</update>
+	
+	<update id="UPDATE_SUBJECT_PARENT_ID" parameterClass="SUBJECT">
+		<![CDATA[
+             UPDATE 
+             	subject
+             SET
+             	subject_name = #subjectName#,
+             	subject_desc = #subjectDesc#,
+             	subject_type = #subjectType#,
+             	subject_enabled = #subjectEnabled#,
+             	subject_formula = #subjectFormula#,
+             	subject_formula_txt = #subjectFormulaTxt#,
+             	user_name = #userName#,
+             	modify_time = #modifyTime#
+             WHERE
+             	parent_subject_id = #subjectId#
+        ]]>
+	</update>
+	
+	<delete id="DELETE_SUBJECT" parameterClass="java.lang.Integer">
+		delete 
+		FROM subject
+		where subject_id = #subjectId#
+	</delete>
+	
+	
+
+</sqlMap>

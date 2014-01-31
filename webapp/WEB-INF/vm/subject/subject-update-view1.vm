@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>更新收费科目</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/lib/lib.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/topbar.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/header.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/footer.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/layout.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/ui/add.css">
+    <script src="../static/js/lib/lib.js"></script>
+    <base target="_self"/>
+</head>
+<body>
+#set($user=$session.getAttribute("USERS")) 
+<div class="doc" id="doc">
+    <!--toolbar start-->
+    <div class="topbar" id="topbar">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-toolbar">
+                    <p>你好！<span class="user-name">${user.userName}</span>#if (${user.messageSize}>0)<a href="/user/user-message.do"><span class="clock">${user.messageSize}</span></a>&nbsp;&nbsp;#end<a href="/user/user-password.do" target="_self" class="login">修改密码</a>&nbsp;&nbsp;<a href="/user/user-logout.do" target="_self" class="login" onclick="return confirm('确定要退出系统吗')">退出</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--toolbar end-->
+    <!--logo-->
+    <div class="header" id="header">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-masthead">
+                    <a href="/index.do"><img src="../static/img/logo.png" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--logo end-->
+    <div class="content" id="content">
+        <div class="layout">
+            <div class="grid">
+                <!--右侧内容开始-->
+                <div class="col-main">
+                    <div class="col-main-wrap clearfix">
+						<form action="/subject/subject-update-step2.do" id="subject-step-form" method="post">
+						<input type="hidden" id="subjectId" name="subjectId" value="${subject.subjectId}" />
+						<input type="hidden" id="subjectProject" name="subjectProject" value="${subjectProject}" />
+						<input type="hidden" id="subjectType" name="subjectType" value="${subjectType}" />
+						<input type="hidden" id="subjectDesc" name="subjectDesc" value="${subjectDesc}" />
+						<input type="hidden" id="subjectName" name="subjectName" value="${subjectName}" />
+						<input type="hidden" id="subjectEnable" name="subjectEnable" value="${subjectEnable}" />
+						
+                        <div class="mod-baobiao-add ui-form">
+                            <div class="header">
+                                <span>第二步：为收费科目设置公式</span>
+                            </div>
+                            <div class="content">
+                                <div class="field field-bb" id="select-type">
+                                   <div class="inline inline-pd" style="padding-left: 35px;"><button type="button" class="btn btn-primary" id="btn-price" data-v="-1">单价</button></div>
+                                  
+                                   <div class="inline inline-pd">
+                                       <select style="width: 150px" class="select-field">
+                                           <option value="-1">请选择系统字段</option>
+										   #foreach($field in $systemFields)
+										   <option value="${field.classIdentify}-${field.fieldName}">${field.fieldDesc}</option>
+										   #end
+                                       </select>
+                                   </div>
+                                    <div class="inline inline-pd">
+                                        <select style="width: 150px" class="select-field">
+                                            <option value="-1">请选择录入字段</option>
+                                            #foreach($field in $typeInFields)
+										    <option value="${field.fieldId}">${field.fieldName}</option>
+										    #end
+                                        </select>
+                                    </div>
+                                    <div class="inline inline-pd">
+                                        <select style="width: 170px" class="select-field">
+                                            <option>请选择系统衍生字段</option>
+                                            #foreach($field in $deriveFields)
+										    <option value="${field.fieldId}">${field.fieldName}</option>
+										    #end
+                                        </select>
+                                    </div>
+									<div  style="margin-top:10px;">
+    									<div class="name" style="width: 96px;">输入数量值:</div>
+    									<div class="v2">
+    										<input type="text" id="numSum" name="numSum" style="width:100px;" value="0.0"/>
+    										<div class="inline inline-pd"><button type="button" class="btn btn-primary" id="btn-count" data-v="-2">输入数量</button></div>
+    									</div>
+									</div>
+                                </div>
+								
+                                <div class="field clearfix" id="sign-list">
+                                    <div class="wrap">
+                                        <!--<button class="sign sign1" data-v="(" data-idx="0" style="margin-left: 35px;">左括号</button>
+                                        <button class="sign sign2" data-v=")" data-idx="1">右括号</button>-->
+                                        <button class="sign sign3" data-v="+" data-idx="2" style="margin-left: 35px;">加号</button>
+                                        <button class="sign sign4" data-v="-" data-idx="3">减号</button>
+                                        <button class="sign sign5" data-v="*" data-idx="4">乘号</button>
+                                        <button class="sign sign6" data-v="/" data-idx="5">除号</button>
+                                        <button class="sign sign7" data-v="" data-idx="7">回退</button>
+                                    </div>
+                                </div>
+                                <div class="field clearfix">
+                                    <div class="name" style="width: 96px;">预览公式：</div>
+                                    <div class="v">
+                                        <div class="gongshi-list" id="gongshi-list">
+                                            ${subject.getFormulaSpan()}
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="hidden-gongshi" name="hidden-gongshi" value="${subject.subjectFormula}"/>
+                                    <input type="hidden" id="hidden-gongshi-txt" name="hidden-gongshi-txt" value="${subject.subjectFormulaTxt}"/>
+                                </div>
+                                <div class="action">
+                                    <button type="submit" class="btn btn-primary">确定</button>
+                                    <button type="reset" class="btn" onclick="javascript:window.history.go(-1);">上一步</button>
+                                </div>
+                            </div>
+                        </div>
+						</form>
+                    </div>
+                </div>
+                <!--右侧内容结束-->
+                 <!--左侧内容开始-->
+               <div class="col-sub">
+                    <div class="mod-menu">
+                        <div class="header">
+                            <h2>优库结算系统</h2>
+                        </div>
+                        <div class="content">
+                            <dl class="menu-item">
+								#if(${user.getUserPrivliages().contains(1)})
+                                <dd class="menu-item menu-nodes">
+                                    <a href="" class="node">优库结算账单</a>
+                                    <ul class="">
+                                        <li><a href="/bill/bill-index.do" class="node">结算账单管理</a></li>
+                                        <li><a href="/bill/bill-add-index.do" class="node">添加账单生成任务</a></li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(2)})
+                                <dd class="menu-item menu-nodes">
+                                    <a href="#" class="node">优库结算报表</a>
+                                    <ul class="">
+                                        <li>
+                                            <a href="/report/report-index.do" class="node">报表管理</a>
+                                        </li>
+										<li>
+                                            <a href="/report/report-add-view.do" class="node">新添报表</a>
+                                        </li>
+										<li>
+                                            <a href="/report-detail/report-detail-index.do" class="node">报表进度管理</a>
+                                        </li>
+                                        <li>
+                                            <a href="/report-detail/report-detail-add-index.do" class="node">添加报表生成任务</a>
+										</li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(3)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">优库数据记录</a>
+                                    <ul>
+                                        <li>
+                                            <a href="/fieldwarm/field-warm-enable-manage-index.do" class="node">数据记录管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(4)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">项目收费配置</a>
+                                    <ul class="mt-menu-sub-content">
+                                        <li>
+                                            <a href="/project/project-subject-index.do" class="node">项目收费配置管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(5)})
+                                <dd class="menu-nodes current">
+                                    <a href="#" class="node">优库收费科目</a>
+                                    <ul>
+                                        <li class="current">
+                                            <a href="/subject/subject-index.do" class="node">收费科目管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(6)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">优库字段管理</a>
+                                    <ul>
+                                        <li><a href="/field/field-index.do" class="node">字段管理</a></li>
+                                        <li>
+                                            <a href="/fieldwarm/field-warm-index.do" class="node" >提醒管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(7)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">系统管理功能</a>
+                                    <ul>
+                                        <li >
+                                            <a href="/user/user-index.do" class="node">用户管理</a>
+                                        </li>
+                                        <li >
+                                            <a href="/role/role-index.do" class="node" >角色管理</a>
+                                        </li>
+                                        <li >
+                                            <a href="/project/project-index.do" class="node" >项目管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <!--左侧菜单结束-->
+            </div>
+        </div>
+    </div>
+    <!--footer start-->
+    <div class="footer clearfix" id="footer">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-footer">
+                    <div class="content">
+                        <p>©2012 800best.com 版权所有 ICP证: 浙B2-20070189</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer end-->
+    <script src="../static/js/pages/shoufei/add.js"></script>
+	<script language="javascript" type="text/javascript">
+	$(document).ready(function(){
+		$('#subjectType').change(function(){
+			var selectedValue = $(this).children('option:selected').val();
+			if (selectedValue==2){
+				$('#projectDiv').hide();
+			}
+			else if (selectedValue=1){
+				$('#projectDiv').show();
+			}
+		})
+	});
+    </script>
+</div>
+<script src="../static/js/pages/menu.js"></script>
+<script src="../static/js/pages/xitong/add-subject.js"></script>
+</body>
+</html>

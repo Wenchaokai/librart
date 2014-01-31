@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userSpace">
+	
+	<typeAlias alias="USER" type="com.best.domain.User" />
+
+	<resultMap class="USER" id="PARTIAL_PROPERTIES">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="loginName" column="login_name" />
+		<result property="userRole" column="user_role"/>
+		<result property="userEmail" column="user_email"/>
+		<result property="userEnable" column="user_enable"/>
+		<result property="userProject" column="user_project"/>
+		<result property="userPerson" column="user_person"/>
+	</resultMap>
+	
+	<resultMap class="USER" id="ALL_PROPERTIES">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="loginName" column="login_name" />
+		<result property="userRole" column="user_role"/>
+		<result property="userEmail" column="user_email"/>
+		<result property="userEnable" column="user_enable"/>
+		<result property="userProject" column="user_project"/>
+		<result property="userPerson" column="user_person"/>
+		<result property="userPsw" column="user_psw"/>
+	</resultMap>
+	
+	<select id="LIST_ALL_USERS" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT 
+            	*
+            FROM 
+            	users 
+            ORDER BY user_id
+        ]]>
+	</select>
+	
+	<select id="GET_USER_BY_ID" parameterClass="java.lang.Long" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT 
+            	*
+            FROM 
+            	users 
+            WHERE 
+            	user_id=#userId#
+            ORDER BY user_id
+        ]]>
+	</select>
+	
+	<update id="UPDATE_USER_PASSWORD" parameterClass="java.util.Map">
+		<![CDATA[
+            UPDATE 
+            	users 
+            SET 
+            	user_psw=#newUserPsw#
+            WHERE
+            	user_id=#userId# AND user_psw=#oldUserPsw#
+        ]]>
+	</update>
+	
+	<update id="USER_PASSWORD_RESET" parameterClass="java.util.Map">
+		<![CDATA[
+            UPDATE 
+            	users 
+            SET 
+            	user_psw=#newUserPsw#
+            WHERE
+            	user_id=#userId#
+        ]]>
+	</update>
+	
+	<select id="CHECKED_USER_COUNT" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		<![CDATA[
+            SELECT 
+            	count(user_id) 
+            FROM 
+            	users 
+            WHERE 
+            	user_email=#userEmail#
+        ]]>
+	</select>
+
+	<select id="CHECK_USER" parameterClass="user" resultMap="PARTIAL_PROPERTIES">
+		<![CDATA[
+            SELECT 
+            	user_id, user_name,login_name,user_role,user_email,user_enable,user_project,user_person
+            FROM 
+            	users 
+            WHERE 
+            	login_name=#loginName# AND user_psw=#userPsw#
+        ]]>
+	</select>
+	
+	<select id="GET_USER_BY_PAGESIZE" parameterClass="java.util.Map" resultMap="PARTIAL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	user_id, user_name,login_name,user_role,user_email,user_enable,user_project,user_person
+            FROM 
+            	users
+        ]]>
+        <dynamic prepend="where">  
+			<isNotNull prepend=" and " property="searchName">login_name LIKE #searchName# OR user_name LIKE #searchName#</isNotNull>
+			<isNotNull prepend=" and " property="searchEnabled">user_enable = #searchEnabled#</isNotNull>  
+		</dynamic>  
+        <![CDATA[
+            ORDER BY 
+            	user_id
+            LIMIT 
+            	#startIndex#,#pageSize#
+        ]]>
+	</select>
+	
+	<select id="GET_USER_BY_NAME" parameterClass="java.util.Map" resultMap="PARTIAL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	user_id, user_name,login_name,user_role,user_email,user_enable,user_project,user_person
+            FROM 
+            	users
+            WHERE
+            	user_name LIKE #searchName#
+            ORDER BY 
+            	user_id
+            LIMIT 
+            	#startIndex#,#pageSize#
+        ]]>
+	</select>
+	<select id="GET_USER_BY_COUNT" parameterClass="java.util.Map" resultMap="PARTIAL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	user_id, user_name,login_name,user_role,user_email,user_enable,user_project,user_person
+            FROM 
+            	users
+            WHERE
+            	user_email LIKE #searchEmail#
+            ORDER BY 
+            	user_id
+            LIMIT 
+            	#startIndex#,#pageSize#
+        ]]>
+	</select>
+	<select id="GET_USER_BY_ALL" parameterClass="java.util.Map" resultMap="PARTIAL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	user_id, user_name,login_name,user_role,user_email,user_enable,user_project,user_person
+            FROM 
+            	users
+            WHERE
+            	user_email LIKE #searchEmail# AND user_name LIKE #searchName#
+            ORDER BY 
+            	user_id
+            LIMIT 
+            	#startIndex#,#pageSize#
+        ]]>
+	</select>
+	
+	<select id="GET_USER_BY_TOTALSIZE" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		<![CDATA[
+            SELECT
+            	count(*)
+            FROM 
+            	users
+         ]]>
+		<dynamic prepend="where">  
+			<isNotNull prepend=" and " property="searchName">login_name LIKE #searchName# OR user_name LIKE #searchName#</isNotNull>
+			<isNotNull prepend=" and " property="searchEnabled">user_enable = #searchEnabled#</isNotNull>  
+		</dynamic>  
+       
+	</select>
+	<update id="UPDATE_USER_INFO" parameterClass="user">
+		<![CDATA[
+			UPDATE
+				users
+			SET
+				user_name=#userName#,
+				user_role=#userRole#,
+				user_project=#userProject#,
+				user_enable=#userEnable#
+			WHERE
+				user_id=#userId#
+		]]>
+	</update>
+	<insert id="INSERT_USER" parameterClass="user">
+		<![CDATA[
+             INSERT INTO 
+            	users (login_name,user_name,user_psw,user_role,user_enable,user_project,user_email) 
+            VALUES 
+            	(#loginName#,#userName#,#userPsw#,#userRole#,#userEnable#,#userProject#,#userEmail#)
+        ]]>
+	</insert>
+	<delete id="DELETE_USER" parameterClass="java.lang.Long">
+		<![CDATA[
+            DELETE FROM 
+            	users
+            WHERE 
+            	user_id=#userId#
+        ]]>
+	</delete>
+
+</sqlMap>

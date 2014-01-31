@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="reportSpace">
+
+	<typeAlias alias="REPORT" type="com.best.domain.Report" />
+
+	<resultMap class="REPORT" id="ALL_PROPERTIES">
+		<result property="reportId" column="report_id" />
+		<result property="reportName" column="report_name" />
+		<result property="reportProjectId" column="report_project_id" />
+		<result property="reportProjectName" column="project_name" />
+		<result property="reportType" column="report_type" />
+		<result property="reportObjectType" column="report_object_type" />
+		<result property="reportClassObject" column="report_class_object" />
+		<result property="reportField" column="report_field" />
+		<result property="reportCreator" column="report_creator" />
+		<result property="reportGmtCreate" column="report_gmt_create" />
+		<result property="reportEnable" column="report_enable" />
+	</resultMap>
+	
+	<select id="GET_ALL_REPORT" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	report_id,report_name,report_project_id,report_type,report_object_type,report_class_object,report_field,report_creator,report_gmt_create,report_enable,project_name
+            FROM 
+            	report a LEFT JOIN project b on a.report_project_id=b.project_id
+            ORDER BY report_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_REPORT" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	report_id,report_name,report_project_id,report_type,report_object_type,report_class_object,report_field,report_creator,report_gmt_create,report_enable,project_name
+            FROM 
+            	report a LEFT JOIN project b on a.report_project_id=b.project_id
+            WHERE
+            	report_project_id =#projectId#
+            ORDER BY report_id DESC
+        ]]>
+	</select>
+	
+	<insert id="ADD_REPORT" parameterClass="REPORT">
+		<![CDATA[
+             INSERT INTO 
+            	report (report_name,report_project_id,report_type,report_object_type,report_class_object,report_field,report_creator,report_gmt_create,report_enable) 
+            VALUES 
+            	(#reportName#,#reportProjectId#,#reportType#,#reportObjectType#,#reportClassObject#,#reportField#,#reportCreator#,#reportGmtCreate#,#reportEnable#)
+        ]]>
+	</insert>
+	
+	<update id="UPDATE_REPORT" parameterClass="REPORT">
+		<![CDATA[
+             UPDATE 
+             	report
+             SET
+             	report_name = #reportName#,
+             	report_project_id = #reportProjectId#,
+             	report_type = #reportType#,
+             	report_object_type = #reportObjectType#,
+             	report_class_object = #reportClassObject#,
+             	report_field = #reportField#,
+             	report_enable = #reportEnable#
+             WHERE
+             	report_id = #reportId#
+        ]]>
+	</update>
+	
+	
+
+</sqlMap>

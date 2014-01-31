@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="billDetailSpace">
+
+	<typeAlias alias="BILLDETAIL" type="com.best.domain.BillDetail" />
+
+	<resultMap class="BILLDETAIL" id="ALL_PROPERTIES">
+		<result property="billId" column="bill_id" />
+		<result property="billDetailId" column="bill_detail_id" />
+		<result property="billSubjectId" column="bill_subject_id" />
+		<result property="billSubjectName" column="subject_name" />
+		<result property="billDetailSum" column="bill_detail_sum" />
+		<result property="subjectFormulaTxt" column="subject_formula_txt" />
+		<result property="billFieldFile" column="bill_field_file" />
+	</resultMap>
+	
+	<select id="GET_ALL_BILL_DETAIL" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,subject_name,subject_formula_txt
+            FROM 
+            	bill_detail a LEFT JOIN subject b on a.bill_subject_id=b.subject_id
+            WHERE 
+            	bill_id = #billId#
+            ORDER BY bill_detail_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_BILL_DETAIL" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,subject_name,subject_formula_txt
+            FROM 
+            	bill_detail a LEFT JOIN subject b on a.bill_subject_id=b.subject_id
+            WHERE 
+            	bill_detail_id = #billDetailId#
+        ]]>
+	</select>
+	
+	<insert id="ADD_BILL_DETAIL" parameterClass="BILLDETAIL">
+		<![CDATA[
+             INSERT INTO 
+            	bill_detail (bill_subject_id,bill_detail_sum,bill_id,bill_field_file) 
+            VALUES 
+            	(#billSubjectId#,#billDetailSum#,#billId#,#billFieldFile#)
+        ]]>
+	</insert>
+	
+	<delete id="DELETE_BILL_DETAIL" parameterClass="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM bill_detail
+			WHERE bill_detail_id = #billDetailId#
+		]]>
+	</delete>
+	
+	
+	<update id="UPDATE_BILL_DETAIL" parameterClass="BILLDETAIL">
+		<![CDATA[
+			UPDATE 
+				BILL_DETAIL
+			SET 
+				bill_detail_sum = #billDetailSum#
+			WHERE bill_detail_id = #billDetailId#
+		]]>
+	</update>
+	
+
+</sqlMap>

@@ -1,0 +1,212 @@
+.mod-baobiao-add{
+
+}
+.mod-baobiao-add .header{
+    height: 45px;
+    background-color: #e8e6e7;
+    font-size: 16px;
+    line-height: 45px;
+    padding-left: 30px;
+    color: #8d8b8c;
+}
+.mod-baobiao-add .header .gt{
+    padding: 0px 4px;
+}
+.mod-baobiao-add .content{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.ui-form .field{
+    min-height: 30px;
+    color: #5d5d5d;
+    padding-bottom: 12px;
+}
+.ui-form .field .name{
+    width: 140px;
+    text-align: right;
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    padding-right: 8px;
+}
+.ui-form .field .name .red{
+    color: #CC0000;
+    font-weight: bold;
+}
+.ui-form .field .v{
+    float: left;
+    width: 600px;
+    min-height: 30px;
+}
+.ui-form .field .v .txt{
+    line-height: 30px;
+    color: #666;
+    font-size: 12px;
+}
+.ui-form .field .v select{
+    font-size: 12px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0px;
+    border-radius: 0px;
+    padding:2px;
+}
+.ui-form .field .v .ui-input{
+    border-radius: 0px;
+}
+.ui-form .field .checkbox-list table{
+    width: 100%;
+}
+.ui-form .field .checkbox-list{
+    border:1px solid #acacac;
+    padding: 12px;
+    padding-top: 4px;
+}
+.ui-form .field .checkbox-list-4 td{
+    vertical-align: middle;
+    width: 25%;
+    line-height: 24px;
+}
+.ui-form .field .checkbox-list-4 input,
+.ui-form .field input.checkbox{
+    margin-top: -3px;
+}
+.ui-form .field textarea{
+    text-align: left;
+}
+.ui-form .field .checkbox-list-4 label,
+.ui-form .field label.l{
+    display: inline-block;
+    margin-bottom: 0px;
+    margin-top: 4px;
+    padding-left: 5px;
+    font-size: 12px;
+}
+.ui-form .action{
+    padding-left: 150px;
+}
+.ui-form .action .btn{
+    margin-right: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.ui-form .inline{
+    display: inline-block;
+}
+.ui-form .ui-datepicker-append{
+    display: none;
+}
+.ui-form .selected-list{
+
+}
+.ui-form .selected-list dl{
+    margin-bottom: 10px;
+    min-height: 30px;
+    margin-top: 4px;
+}
+.ui-form .selected-list dt,
+.ui-form .selected-list dd{
+    float: left;
+    height: 23px;
+    line-height: 23px;
+    font-size: 12px;
+}
+.ui-form .selected-list dd h4{
+    font-size: 12px;
+    padding: 0px;
+    margin: 0px;
+    padding-top: 5px;
+    display: inline;
+}
+.ui-form .selected-list dd .cancle{
+    background: transparent url("../../../img/cancle.jpg") no-repeat 0px 0px;
+    position: relative;
+    top: 1px;
+    left: 2px;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
+}
+.ui-form .selected-list dt{
+    width: 70px;
+    font-weight: bold;
+}
+.ui-form .selected-list dd{
+    margin-right: 18px;
+    white-space: nowrap;
+    margin-left: 0px;
+}
+.ui-form .field-bb{
+
+}
+.ui-form .field-bb .inline-pd{
+    padding-left: 14px;
+}
+.ui-form .field .sign{
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    text-indent: -9999px;
+    background:transparent url(../../../img/sign.jpg) no-repeat 0px 0px;
+    border: 0 none;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+.ui-form .field .sign2{
+    background-position: -63px 0px;
+}
+.ui-form .field .sign3{
+    background-position: -126px 0px;
+}
+.ui-form .field .sign4{
+    background-position: -189px 0px;
+}
+.ui-form .field .sign5{
+    background-position: -254px 0px;
+}
+.ui-form .field .sign6{
+    background-position: -317px 0px;
+}
+.ui-form .field .sign7{
+    background-position: -375px 0px;
+    width: 70px;
+}
+.ui-form .gongshi-list{
+    border: 1px solid #b0b0b0;
+    width: 500px;
+    min-height: 140px;
+    _height:140px;
+    padding:10px;
+    word-break: break-all;
+}
+.ui-form .gongshi-list .step{
+    white-space: nowrap;
+    float: left;
+    padding: 0px 3px;
+}
+.ui-form .gongshi-list .step.s{
+    color: #122b54;
+}
+.ui-form .content .hd{
+    background: transparent url(../../../img/step2.jpg) repeat-x 0px -12px;
+}
+.ui-form .content .hd .wrap{
+    background: transparent url(../../../img/step1.jpg) no-repeat center -9px;
+    padding-top: 30px;
+    text-align: center;
+}
+.ui-form .content .hd h3{
+    font-size: 12px;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    background-color: #ccc;
+    display: inline-block;
+    padding: 0px 16px;
+    margin: 0px;
+    margin-bottom: 10px;
+    font-weight: normal;
+}

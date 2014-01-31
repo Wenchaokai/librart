@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>新增提醒</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/lib/lib.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/topbar.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/header.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/footer.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/layout.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/ui/add.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/table-common.css">
+    <script src="../static/js/lib/lib.js"></script>
+    <base target="_self"/>
+</head>
+<body>
+#set($user=$session.getAttribute("USERS"))
+<div class="doc" id="doc">
+    <!--toolbar start-->
+    <div class="topbar" id="topbar">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-toolbar">
+                    <p>你好！<span class="user-name">${user.userName}</span>#if (${user.messageSize}>0)<a href="/user/user-message.do"><span class="clock">${user.messageSize}</span></a>&nbsp;&nbsp;#end<a href="/user/user-password.do" target="_self" class="login">修改密码</a>&nbsp;&nbsp;<a href="/user/user-logout.do" target="_self" class="login" onclick="return confirm('确定要退出系统吗')">退出</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--toolbar end-->
+    <!--logo-->
+    <div class="header" id="header">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-masthead">
+                    <a href="/index.do"><img src="../static/img/logo.png" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--logo end-->
+    <div class="content" id="content">
+        <div class="layout">
+            <div class="grid">
+                <!--右侧内容开始-->
+                <div class="col-main">
+                    <div class="col-main-wrap clearfix">
+						<form action="/fieldwarm/field-warm-add-first.do" id="field-warm-form" method="post">
+                        <div class="mod-baobiao-add ui-form">
+                            <div class="header">
+                                <span>录入字段管理</span><span class="gt">&gt;</span><span>提醒功能</span><span class="gt">&gt;</span><span>新增提醒</span>
+                            </div>
+                            <div class="content">
+                                <div class="hd">
+                                    <div class="wrap">
+                                         <h3>Step1.请选择项目、字段和负责人</h3>
+                                    </div>
+                                </div>
+                                <div class="field clearfix">
+                                    <div class="name">请选择项目：</div>
+                                    <div class="v">
+                                        <select name="project">
+											#foreach ($project in $projects)
+												<option value="${project.projectId}">${project.projectName}</option>
+											#end
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field clearfix">
+                                    <div class="name">请选择录入字段：</div>
+                                    <div class="v">
+                                        <div class="checkbox-list checkbox-list-4">
+											<div class="customer-select clearfix" id="filter-div" style="margin-bottom:5px;">
+        										<input type="text" id="filterText" value="${filterTitle}" style="height:15px;margin-top:1px;"/>
+        										<button type="button" onclick="filterCustomer()">过滤</button>
+        									 </div>
+                                            <table>
+												#foreach ($fieldList in $fields)
+												<tr>
+													#foreach ($field in $fieldList)
+														<td>
+                                                            <input type="checkbox" name="field" value="${field.fieldId}"/><label>${field.fieldName}</label>
+                                                        </td>
+													#end
+												</tr>
+												#end
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field clearfix">
+                                    <div class="name"><span class="red">*</span>请选择负责人：</div>
+                                    <div class="v">
+										<select name="first">
+											#foreach ($user in $users)
+												<option value="${user.userId}">${user.userName}</option>
+											#end
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field clearfix">
+                                    <div class="name"><span class="red">*</span>请选择第二负责人：</div>
+                                    <div class="v">
+                                        <select name="second">
+											#foreach ($user in $users)
+												<option value="${user.userId}">${user.userName}</option>
+											#end
+                                        </select>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="action">
+                                    <button type="submit" class="btn btn-primary">下一步</button>
+                                    <button type="reset" class="btn" onclick="javascript:window.history.go(-1);">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--右侧内容结束-->
+                <!--左侧内容开始-->
+               <div class="col-sub">
+                    <div class="mod-menu">
+                        <div class="header">
+                            <h2>优库结算系统</h2>
+                        </div>
+                        <div class="content">
+                            <dl class="menu-item">
+								#if(${user.getUserPrivliages().contains(1)})
+                                <dd class="menu-item menu-nodes">
+                                    <a href="" class="node">优库结算账单</a>
+                                    <ul class="">
+                                        <li><a href="/bill/bill-index.do" class="node">结算账单管理</a></li>
+                                        <li><a href="/bill/bill-add-index.do" class="node">添加账单生成任务</a></li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(2)})
+                                <dd class="menu-item menu-nodes">
+                                    <a href="#" class="node">优库结算报表</a>
+                                    <ul class="">
+                                        <li>
+                                            <a href="/report/report-index.do" class="node">报表管理</a>
+                                        </li>
+										<li>
+                                            <a href="/report/report-add-view.do" class="node">新添报表</a>
+                                        </li>
+										<li>
+                                            <a href="/report-detail/report-detail-index.do" class="node">报表进度管理</a>
+                                        </li>
+                                        <li>
+                                            <a href="/report-detail/report-detail-add-index.do" class="node">添加报表生成任务</a>
+										</li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(3)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">优库数据记录</a>
+                                    <ul>
+                                        <li>
+                                            <a href="/fieldwarm/field-warm-enable-manage-index.do" class="node">数据记录管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(4)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">项目收费配置</a>
+                                    <ul class="mt-menu-sub-content">
+                                        <li>
+                                            <a href="/project/project-subject-index.do" class="node">项目收费配置管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(5)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">优库收费科目</a>
+                                    <ul>
+                                        <li>
+                                            <a href="/subject/subject-index.do" class="node">收费科目管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(6)})
+                                <dd class="menu-nodes current">
+                                    <a href="#" class="node">优库字段管理</a>
+                                    <ul >
+                                        <li ><a href="/field/field-index.do" class="node">字段管理</a></li>
+                                        <li class="current">
+                                            <a href="/fieldwarm/field-warm-index.do" class="node" >提醒管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(7)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">系统管理功能</a>
+                                    <ul>
+                                        <li >
+                                            <a href="/user/user-index.do" class="node">用户管理</a>
+                                        </li>
+                                        <li >
+                                            <a href="/role/role-index.do" class="node" >角色管理</a>
+                                        </li>
+                                        <li >
+                                            <a href="/project/project-index.do" class="node" >项目管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <!--左侧菜单结束-->
+            </div>
+        </div>
+    </div>
+    <!--footer start-->
+    <div class="footer clearfix" id="footer">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-footer">
+                    <div class="content">
+                        <p>©2012 800best.com 版权所有 ICP证: 浙B2-20070189</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer end-->
+</div>
+<script src="../static/js/pages/menu.js"></script>
+<script src="../static/js/pages/xitong/add-field-warm.js"></script>
+<script type="text/javascript">
+	var host="/fieldwarm/field-warm-add-view.do?filterTitle=";
+    function filterCustomer(){
+    	var filter = $.trim($('#filterText').val());
+		host += filter;
+		window.location.href = host;
+    }
+</script>
+</body>
+</html>

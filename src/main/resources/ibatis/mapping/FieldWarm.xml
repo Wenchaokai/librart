@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="fieldWarmSpace">
+
+	<typeAlias alias="FIELDWARM" type="com.best.domain.FieldWarm" />
+
+	<resultMap class="FIELDWARM" id="ALL_PROPERTIES">
+		<result property="fieldWarmId" column="field_warm_id" />
+		<result property="fieldWarmProjectId" column="field_warm_project_id" />
+		<result property="fieldWarmFieldId" column="field_warm_field_id" />
+		<result property="fieldWarmChargeManFirstId" column="field_warm_charge_man_first_id" />
+		<result property="fieldWarmChargeManSecondId" column="field_warm_charge_man_second_id" />
+		<result property="fieldWarmEnabled" column="field_warm_enabled" />
+		<result property="fieldWarmValue" column="field_warm_value" />
+		<result property="fieldWarmPeriod" column="field_warm_period" />
+		<result property="fieldWarmFieldName" column="field_name"/>
+		<result property="fieldWarmProjectName" column="project_name"/>
+		<result property="fieldWarmFieldPeriod" column="field_period"/>
+		<result property="fieldWarmModifier" column="field_warm_modifier" />
+		<result property="fieldWarmGmtModified" column="field_warm_gmt_modified" />	
+		<result property="fieldWarmServiceDate" column="field_warm_service_date" />	
+		<result property="fieldWarmDataDesc" column="field_warm_data_desc" />	
+		<result property="dataType" column="data_type" />	
+		<result property="historyRecord" column="history_record" />
+	</resultMap>
+	
+	<select id="GET_ALL_FIELD_WARM" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	field_warm_id,field_warm_project_id,field_warm_field_id,field_warm_charge_man_first_id,field_warm_charge_man_second_id,field_warm_enabled,field_warm_value,field_warm_period,field_warm_gmt_modified,field_warm_modifier,field_warm_service_date,data_type,field_warm_data_desc,field_name,field_period,project_name,history_record
+            FROM 
+            	field_warm a LEFT JOIN field b on a.field_warm_field_id = b.field_id LEFT JOIN project p on a.field_warm_project_id=p.project_id
+            ORDER BY field_warm_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_FIELD_WARM_BY_PROJECT" parameterClass="java.util.Map"  resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	field_warm_id,field_warm_project_id,field_warm_field_id,field_warm_charge_man_first_id,field_warm_charge_man_second_id,field_warm_enabled,field_warm_value,field_warm_period,field_warm_gmt_modified,field_warm_modifier,field_warm_service_date,field_warm_data_desc,field_name,field_period,project_name,data_type,history_record
+            FROM 
+            	field_warm a LEFT JOIN field b on a.field_warm_field_id = b.field_id LEFT JOIN project p on a.field_warm_project_id=p.project_id
+            WHERE a.field_warm_project_id = #projectId# AND field_warm_field_id=#fieldId#
+        ]]>
+	</select>
+	
+	<select id="GET_ALL_FIELD_WARM_BY_USER_ID" parameterClass="java.lang.Long" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	field_warm_id,field_warm_project_id,field_warm_field_id,field_warm_charge_man_first_id,field_warm_charge_man_second_id,field_warm_enabled,field_warm_value,field_warm_period,field_warm_gmt_modified,field_warm_modifier,field_warm_service_date,field_warm_data_desc,field_name,field_period,project_name,data_type,history_record
+            FROM 
+            	field_warm a LEFT JOIN field b on a.field_warm_field_id = b.field_id LEFT JOIN project p on a.field_warm_project_id=p.project_id
+            WHERE field_warm_charge_man_first_id = #userId#
+            ORDER BY field_warm_id DESC
+        ]]>
+	</select>
+	
+	<delete id="DELETE_FIELD_WARM_BY_ID" parameterClass="java.lang.Integer">
+		<![CDATA[
+			DELETE
+			FROM 
+				FIELD_WARM
+			WHERE field_warm_id = #fieldWarmId#
+		]]>
+	</delete>
+	
+	<delete id="DELETE_FIELD_WARM_BY_PROJECT_ID" parameterClass="java.lang.Integer">
+		<![CDATA[
+			DELETE
+			FROM 
+				FIELD_WARM
+			WHERE field_warm_project_id = #fieldWarmProjectId#
+		]]>
+	</delete>
+	
+	<select id="GET_FIELD_WARM" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	field_warm_id,field_warm_project_id,field_warm_field_id,field_warm_charge_man_first_id,field_warm_charge_man_second_id,field_warm_data_desc,field_warm_service_date,field_warm_enabled,field_warm_gmt_modified,field_warm_modifier,field_warm_value,field_warm_period,field_name,field_period,project_name,data_type,history_record
+            FROM 
+            	field_warm a LEFT JOIN field b on a.field_warm_field_id = b.field_id LEFT JOIN project p on a.field_warm_project_id=p.project_id
+            WHERE
+            	field_warm_project_id =#fieldWarmProjectId#
+            ORDER BY field_warm_id
+        ]]>
+	</select>
+	
+	<insert id="ADD_FIELD_WARM" parameterClass="FIELDWARM">
+		<![CDATA[
+            INSERT INTO 
+            	field_warm (field_warm_project_id,field_warm_field_id,field_warm_charge_man_first_id,field_warm_charge_man_second_id,field_warm_period,data_type,history_record) 
+            VALUES 
+            	(#fieldWarmProjectId#,#fieldWarmFieldId#,#fieldWarmChargeManFirstId#,#fieldWarmChargeManSecondId#,#fieldWarmPeriod#,#dataType#,#historyRecord#)
+        ]]>
+	</insert>
+	
+	<update id="UPDATE_FIELD_WARM" parameterClass="FIELDWARM">
+		<![CDATA[
+             UPDATE 
+             	field_warm
+             SET
+             	field_warm_field_id = #fieldWarmFieldId#,
+             	field_warm_project_id = #fieldWarmProjectId#,
+             	field_warm_field_id = #fieldWarmFieldId#,
+             	field_warm_charge_man_first_id = #fieldWarmChargeManFirstId#,
+             	field_warm_charge_man_second_id = #fieldWarmChargeManSecondId#,
+             	field_warm_enabled = #fieldWarmEnabled#,
+             	field_warm_value = #fieldWarmValue#,
+             	field_warm_period = #fieldWarmPeriod#,
+             	field_warm_modifier = #fieldWarmModifier#,
+             	field_warm_gmt_modified = #fieldWarmGmtModified#,
+             	field_warm_service_date = #fieldWarmServiceDate#,
+             	field_warm_data_desc = #fieldWarmDataDesc#,
+             	data_type = #dataType#,
+             	history_record = #historyRecord#
+             WHERE
+             	field_warm_id = #fieldWarmId#
+        ]]>
+	</update>
+	
+	
+
+</sqlMap>

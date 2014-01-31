@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="roleSpace">
+
+	<typeAlias alias="ROLE" type="com.best.domain.Role" />
+
+	<resultMap class="ROLE" id="ALL_PROPERTIES">
+		<result property="roleId" column="role_id" />
+		<result property="roleName" column="role_name" />
+		<result property="roleDesc" column="role_desc" />
+		<result property="rolePrivilieges" column="role_privilieges" />
+		<result property="gmtCreate" column="gmt_create" />
+	</resultMap>
+	
+	<select id="GET_ALL_ROLE" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	role
+            ORDER BY gmt_create DESC
+        ]]>
+	</select>
+	
+	<select id="GET_ROLE" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	role
+            WHERE
+            	role_id =#roleId#
+            ORDER BY gmt_create DESC
+        ]]>
+	</select>
+	
+	<insert id="ADD_ROLE" parameterClass="ROLE">
+		<![CDATA[
+             INSERT INTO 
+            	role (role_name,role_desc,role_privilieges,gmt_create) 
+            VALUES 
+            	(#roleName#,#roleDesc#,#rolePrivilieges#,#gmtCreate#)
+        ]]>
+	</insert>
+	
+	<update id="UPDATE_ROLE" parameterClass="ROLE">
+		<![CDATA[
+             UPDATE 
+             	role
+             SET
+             	role_name = #roleName#,
+             	role_desc = #roleDesc#,
+             	role_privilieges = #rolePrivilieges#
+             WHERE
+             	role_id = #roleId#
+        ]]>
+	</update>
+	
+	
+
+</sqlMap>

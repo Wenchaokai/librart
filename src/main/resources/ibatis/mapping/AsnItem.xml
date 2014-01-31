@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="asnItemSpace">
+
+	<typeAlias alias="ASNITEM" type="com.best.domain.wms.AsnItem" />
+	<typeAlias alias="LDODETAIL" type="com.best.domain.LdoDetail" />
+
+	<resultMap class="ASNITEM" id="ALL_PROPERTIES">
+		<result property="id" column="id" />
+		<result property="version" column="version" />
+		<result property="createTime" column="create_time" />
+		<result property="lastUpdateTime" column="last_update_time" />
+		<result property="asnId" column="asn_id" />
+		<result property="providerCode" column="provider_code" />
+		<result property="providerName" column="provider_name" />
+		<result property="skuCode" column="sku_code" />
+		<result property="name" column="name" />
+		<result property="quantity" column="quantity" />
+		<result property="note" column="note" />
+		<result property="lineNo" column="line_no" />
+		<result property="fixStatusCode" column="fix_status_code" />
+		<result property="productionDate" column="production_date" />
+		<result property="expiryDate" column="expiry_date" />
+		<result property="lotAtt01" column="lot_att01" />
+		<result property="lotAtt02" column="lot_att02" />
+		<result property="lotAtt03" column="lot_att03" />
+		<result property="lotAtt04" column="lot_att04" />
+		<result property="lotAtt05" column="lot_att05" />
+		<result property="lotAtt06" column="lot_att06" />
+		<result property="lotAtt07" column="lot_att07" />
+		<result property="lotAtt08" column="lot_att08" />
+		<result property="lotAtt09" column="lot_att09" />
+		<result property="lotAtt10" column="lot_att10" />
+		<result property="lotAtt11" column="lot_att11" />
+		<result property="lotAtt12" column="lot_att12" />
+		<result property="packCode" column="pack_code" />
+		<result property="uomCode" column="uom_code" />
+		<result property="unitPrice" column="unit_price" />
+		<result property="providerFrom" column="provider_from" />
+		<result property="udfFlag" column="udfflag" />
+		<result property="udf1" column="udf1" />
+		<result property="udf2" column="udf2" />
+		<result property="udf3" column="udf3" />
+		<result property="udf4" column="udf4" />
+		<result property="udf5" column="udf5" />
+		<result property="udf6" column="udf6" />
+		<result property="udf7" column="udf7" />
+		<result property="udf8" column="udf8" />
+	</resultMap>
+	
+	
+	<resultMap class="LDODETAIL" id="LDO_DETAIL">
+		<result property="refCode" column="REF_CODE" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="skuCode" column="SKU_CODE" />
+		<result property="quantity" column="QUANTITY" />
+	</resultMap>
+	
+	<select id="GET_DATA" parameterClass="java.util.Map" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+			SELECT a.id,a.version,to_char(a.CREATE_TIME,'yyyyMMdd') AS create_time,a.last_update_time,a.asn_id,a.provider_code,a.provider_name,a.sku_code,a.name,a.quantity,a.note,a.line_no,a.fix_status_code,a.production_date,a.expiry_date,a.lot_att01,a.lot_att02,a.lot_att03,a.lot_att04,a.lot_att05,a.lot_att06,a.lot_att07,a.lot_att08,a.lot_att09,a.lot_att10,a.lot_att11,a.lot_att12,a.pack_code,a.uom_code,a.unit_price,a.provider_from,a.udfflag,a.udf1,a.udf2,a.udf3,a.udf4,a.udf5,a.udf6,a.udf7,a.udf8
+			FROM ECBOSS_ASN_ITEM a
+			WHERE
+			a.ASN_ID in (
+				SELECT 
+				id
+				FROM 
+					ECBOSS_ASN
+				WHERE 
+					customer_id= (SELECT ID FROM ECBOSS_CUSTOMER WHERE CUSTOMERCODE=#customerCode#) 
+				AND 
+					warehouse_id=(SELECT ID FROM ECBOSS_WAREHOUSE WHERE WAREHOUSECODE=#warehouseCode#)
+				AND
+					CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+				AND 
+					CREATE_TIME<=to_date(#endTime#,'yyyyMMdd')						
+			)
+		]]>
+	</select>
+	
+	<select id="STORED_NORMAL_ORDER_SUM" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT 
+				COUNT(id)
+			FROM 
+				ECBOSS_ASN
+			WHERE 
+				customer_id= (SELECT ID FROM ECBOSS_CUSTOMER WHERE CUSTOMERCODE=#customerCode#) 
+			AND 
+				warehouse_id=(SELECT ID FROM ECBOSS_WAREHOUSE WHERE WAREHOUSECODE=#warehouseCode#)
+			AND	STATUS= 'STORED'
+			AND 	
+				STORETIME>=to_date(#startTime#,'yyyyMMdd')
+			AND 
+				STORETIME<=to_date(#endTime#,'yyyyMMdd')				
+		]]>
+	</select>
+	
+	<select id="STORED_NORMAL_SUM" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT SUM(QUANTITY)
+			FROM ECBOSS_ASN_ITEM a
+			WHERE
+			a.ASN_ID IN (
+				SELECT 
+				id
+				FROM 
+					ECBOSS_ASN
+				WHERE 
+					customer_id= (SELECT ID FROM ECBOSS_CUSTOMER WHERE CUSTOMERCODE=#customerCode#) 
+				AND 
+					warehouse_id=(SELECT ID FROM ECBOSS_WAREHOUSE WHERE WAREHOUSECODE=#warehouseCode#)
+				AND	STATUS= 'STORED'
+				AND 	
+					STORETIME>=to_date(#startTime#,'yyyyMMdd')
+				AND 
+					STORETIME<=to_date(#endTime#,'yyyyMMdd')				
+			)
+		]]>
+		$param$
+	</select>
+	
+	<select id="STORED_NORMAL_DETAIL" parameterClass="java.util.Map" resultMap="LDO_DETAIL">
+		<![CDATA[
+			SELECT b.REF_ASN_CODE AS REF_CODE,to_char(a.CREATE_TIME,'yyyyMMdd') AS CREATE_TIME,a.SKU_CODE AS SKU_CODE,a.QUANTITY AS QUANTITY
+			FROM ECBOSS_ASN_ITEM a JOIN ECBOSS_ASN b
+			ON a.ASN_ID = b.id AND 
+					b.customer_id= (SELECT ID FROM ECBOSS_CUSTOMER WHERE CUSTOMERCODE=#customerCode#) 
+				AND 
+					b.warehouse_id= (SELECT ID FROM ECBOSS_WAREHOUSE WHERE WAREHOUSECODE=#warehouseCode#) 
+				AND	b.STATUS= 'STORED'
+				AND 	
+					b.STORETIME>=to_date(#startTime#,'yyyyMMdd')
+				AND 
+					b.STORETIME<=to_date(#endTime#,'yyyyMMdd')		
+		]]>
+		$param$
+	</select>
+	
+	<select id="STORED_CANCEL_DETAIL" parameterClass="java.util.Map" resultMap="LDO_DETAIL">
+		<![CDATA[
+			SELECT b.REF_RMA_CODE AS REF_CODE,to_char(a.CREATE_TIME,'yyyyMMdd') AS CREATE_TIME,a.SKU_CODE AS SKU_CODE,a.QUANTITY AS QUANTITY
+			FROM ECBOSS_RMA_ITEM a JOIN ECBOSS_RMA b
+			ON a.RMA_ID = b.id AND 
+					b.customer_id= (SELECT ID FROM ECBOSS_CUSTOMER WHERE CUSTOMERCODE=#customerCode#) 
+				AND 
+					b.warehouse_id= (SELECT ID FROM ECBOSS_WAREHOUSE WHERE WAREHOUSECODE=#warehouseCode#) 
+				AND	b.STATUS= 'STORED'
+				AND 	
+					b.STORETIME>=to_date(#startTime#,'yyyyMMdd')
+				AND 
+					b.STORETIME<=to_date(#endTime#,'yyyyMMdd')
+		]]>
+		$param$
+	</select>
+	
+	
+	
+	<select id="STORED_CANCEL_SUM" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT SUM(QUANTITY)
+			FROM ECBOSS_RMA_ITEM a
+			WHERE
+			a.RMA_ID IN (
+				SELECT 
+				id
+				FROM 
+					ECBOSS_RMA
+				WHERE 
+					customer_id= (SELECT ID FROM ECBOSS_CUSTOMER WHERE CUSTOMERCODE=#customerCode#) 
+				AND 
+					warehouse_id=(SELECT ID FROM ECBOSS_WAREHOUSE WHERE WAREHOUSECODE=#warehouseCode#)
+				AND	STATUS= 'STORED'
+				AND 	
+					STORETIME>=to_date(#startTime#,'yyyyMMdd')
+				AND 
+					STORETIME<=to_date(#endTime#,'yyyyMMdd')						
+			)
+		]]>
+		$param$
+	</select>
+	
+	<select id="STORED_CANCEL_ORDER_SUM" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT 
+				COUNT(id)
+			FROM 
+				ECBOSS_RMA
+			WHERE 
+				customer_id= (SELECT ID FROM ECBOSS_CUSTOMER WHERE CUSTOMERCODE=#customerCode#) 
+			AND 
+				warehouse_id=(SELECT ID FROM ECBOSS_WAREHOUSE WHERE WAREHOUSECODE=#warehouseCode#)
+			AND	STATUS= 'STORED'
+			AND 	
+				STORETIME>=to_date(#startTime#,'yyyyMMdd')
+			AND 
+				STORETIME<=to_date(#endTime#,'yyyyMMdd')						
+		]]>
+	</select>
+
+</sqlMap>

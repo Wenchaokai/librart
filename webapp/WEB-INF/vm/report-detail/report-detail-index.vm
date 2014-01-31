@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>查询报表</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/lib/lib.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/topbar.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/header.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/footer.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/layout.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/module/table-common.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/pages/baobiao/moban.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/css/pages/baobiao/query.css">
+    <link type="text/css" rel="stylesheet" media="all" href="../static/plugins/jquery-ui/css/ui.css">
+    <script src="../static/js/lib/lib.js"></script>
+    <script src="../static/plugins/jquery-ui/js/ui.js"></script>
+    <base target="_self"/>
+</head>
+<body>
+#set($user=$session.getAttribute("USERS"))
+<div class="doc" id="doc">
+    <!--toolbar start-->
+    <div class="topbar" id="topbar">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-toolbar">
+                    <p>你好！<span class="user-name">${user.userName}</span>#if (${user.messageSize}>0)<a href="/user/user-message.do"><span class="clock">${user.messageSize}</span></a>&nbsp;&nbsp;#end<a href="/user/user-password.do" target="_self" class="login">修改密码</a>&nbsp;&nbsp;<a href="/user/user-logout.do" target="_self" class="login" onclick="return confirm('确定要退出系统吗')">退出</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--toolbar end-->
+    <!--logo-->
+    <div class="header" id="header">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-masthead">
+                    <a href="/index.do"><img src="../static/img/logo.png" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--logo end-->
+    <div class="content" id="content">
+        <div class="layout">
+            <div class="grid">
+                <!--右侧内容开始-->
+                <div class="col-main">
+                    <div class="col-main-wrap">
+                        <div class="mod-moban">
+                            <div class="header">
+                                <span>优库结算报表</span><span class="gt">&gt;</span><span>报表模版管理</span><span class="gt">&gt;</span><span>优库结算报表</span>
+                            </div>
+                            <div class="mod-filter">
+                                <form action="/report-detail/report-detail-index.do" method="post">
+                                    <div class="second-layer fd-clr">
+                                        <label>
+                                            <span>请选择项目：</span>
+                                            <select name="projectId" style="width:100px;">
+                                                <option value="-1">所有项目</option>
+												#foreach($project in $projects)
+													 <option value="${project.projectId}" #if(${project.isChecked}) selected #end>${project.projectName}</option>
+												#end
+                                            </select>
+                                        </label>
+                                        <label>
+                                            <span>业务日期</span>
+                                            <input size="16" type="text" name="startTime" id="startTime" value="${startTime}"  style="width:100px" class="datepicker">
+                                            <span>&nbsp;&nbsp;至&nbsp;&nbsp;</span>
+                                            <input size="16" type="text" name="endTime"  id="endTime" value="${endTime}"  style="width:100px" class="datepicker">
+                                        </label>
+                                        
+                                        <input class="submit" type="submit" value="查询"/>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="table-box">
+                                <div class="table-header">
+                                    <ul class="other-operation">
+                                        <li><a href="/report-detail/report-detail-add-index.do">添加账单生成任务</a></li>
+                                    </ul>
+                                </div>
+                                <table class="table-content">
+                                    <tr>
+                                        <th style="width:20%">报表名称</th>
+                                        <th style="width:15%">项目</th>
+                                        <th style="width:20%">业务日期范围</th>
+                                        <th style="width:15%">申请人</th>
+                                        <th style="width:10%">生成进度</th>
+                                        <th style="width:10%">操作</th>
+                                    </tr>
+									#foreach($reportDetail in $res)
+										 <tr>
+                                            <td>${reportDetail.reportName}</td>
+                                            <td>${reportDetail.reportDetailProjectName}</td>
+                                            <td>${reportDetail.reportDetailStart}-${reportDetail.reportDetailEnd}</td>
+                                            <td>${reportDetail.gmtCreatorName}</td>
+                                            <td>${reportDetail.reportProgress}%</td>
+                                            <td class="operation">
+                                                <span><a href="/report-detail/report-detail-delete.do?reportDetailId=${reportDetail.reportDetailId}" onclick="return confirm('删除后无法恢复,确定要删除吗')">删除</a></span>
+												#if (${reportDetail.reportProgress}==100)
+                                                <span><a href="${reportDetail.filePath}">下载</a></span>
+												#end
+                                            </td>
+                                        </tr>
+									#end
+                                   
+                                </table>
+                            </div>
+                            #if(${res.size()}==0)
+            				<div class="no-result">
+                                <p style="padding-left: 20px;">抱歉，无符合条件的查询结果。请修改查询条件，重新搜索！</p>
+                            </div>
+            				#else
+                            <div class="pagination">
+                                <ul>
+                                    <li><a href="/report-detail/report-detail-index.do?${searchParams}&page=${pPre}">上一页</a></li>
+									#set($nums=[${pStart} .. ${pEnd}])
+    								#foreach($i in $nums)
+    									#if ($i==${currentPage})
+    										<li class="active"><a target="_self">$i</a></li>
+    									#else
+    										<li><a href="/report-detail/report-detail-index.do?${searchParams}&page=$i">$i</a></li>
+    									#end
+    								#end
+                                    <li><a href="/report-detail/report-detail-index.do?${searchParams}&page=${pNext}">下一页</a></li>
+                                </ul>
+                            </div>
+							#end
+                        </div>
+                    </div>
+                </div>
+                <!--右侧内容结束-->
+                <!--左侧内容开始-->
+               <div class="col-sub">
+                    <div class="mod-menu">
+                        <div class="header">
+                            <h2>优库结算系统</h2>
+                        </div>
+                        <div class="content">
+                            <dl class="menu-item">
+								#if(${user.getUserPrivliages().contains(1)})
+                                <dd class="menu-item menu-nodes">
+                                    <a href="" class="node">优库结算账单</a>
+                                    <ul class="">
+                                        <li><a href="/bill/bill-index.do" class="node">结算账单管理</a></li>
+                                        <li><a href="/bill/bill-add-index.do" class="node">添加账单生成任务</a></li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(2)})
+                                <dd class="menu-item menu-nodes current">
+                                    <a href="#" class="node">优库结算报表</a>
+                                    <ul class="">
+                                        <li>
+                                            <a href="/report/report-index.do" class="node">报表管理</a>
+                                        </li>
+										<li>
+                                            <a href="/report/report-add-view.do" class="node">新添报表</a>
+                                        </li>
+										<li class="current">
+                                            <a href="/report-detail/report-detail-index.do" class="node">报表进度管理</a>
+                                        </li>
+                                        <li >
+                                            <a href="/report-detail/report-detail-add-index.do" class="node">添加报表生成任务</a>
+										</li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(3)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">优库数据记录</a>
+                                    <ul>
+                                        <li>
+                                            <a href="/fieldwarm/field-warm-enable-manage-index.do" class="node">数据记录管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(4)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">项目收费配置</a>
+                                    <ul class="mt-menu-sub-content">
+                                        <li>
+                                            <a href="/project/project-subject-index.do" class="node">项目收费配置管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(5)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">优库收费科目</a>
+                                    <ul>
+                                        <li >
+                                            <a href="/subject/subject-index.do" class="node">收费科目管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(6)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">优库字段管理</a>
+                                    <ul>
+                                        <li><a href="/field/field-index.do" class="node">字段管理</a></li>
+                                        <li>
+                                            <a href="/fieldwarm/field-warm-index.do" class="node" >提醒管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+								#if(${user.getUserPrivliages().contains(7)})
+                                <dd class="menu-nodes fold">
+                                    <a href="#" class="node">系统管理功能</a>
+                                    <ul>
+                                        <li >
+                                            <a href="/user/user-index.do" class="node">用户管理</a>
+                                        </li>
+                                        <li >
+                                            <a href="/role/role-index.do" class="node" >角色管理</a>
+                                        </li>
+                                        <li >
+                                            <a href="/project/project-index.do" class="node" >项目管理</a>
+                                        </li>
+                                    </ul>
+                                </dd>
+								#end
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <!--左侧菜单结束-->
+            </div>
+        </div>
+    </div>
+    <!--footer start-->
+    <div class="footer clearfix" id="footer">
+        <div class="layout">
+            <div class="grid">
+                <div class="mod-footer">
+                    <div class="content">
+                        <p>©2012 800best.com 版权所有 ICP证: 浙B2-20070189</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer end-->
+</div>
+<script src="../static/js/pages/baobiao/add-renwu.js"></script>
+<script src="../static/js/pages/menu.js"></script>
+</body>
+</html>

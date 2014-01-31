@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="projectSpace">
+
+	<typeAlias alias="PROJECT" type="com.best.domain.Project" />
+
+	<resultMap class="PROJECT" id="ALL_PROPERTIES">
+		<result property="projectId" column="project_id" />
+		<result property="projectName" column="project_name" />
+		<result property="projectCustomer" column="project_customer" />
+		<result property="projectWareHouse" column="project_warehouse" />
+		<result property="projectCooper" column="project_cooper" />
+		<result property="projectBusiness" column="project_business" />
+		<result property="projectEnable" column="project_enable" />
+		<result property="gmtCreate" column="gmt_create" />
+	</resultMap>
+	
+	<select id="GET_ALL_PROJECT" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	project
+            ORDER BY gmt_create DESC
+        ]]>
+	</select>
+	
+	<select id="GET_PROJECT" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	project
+            WHERE
+            	project_id =#projectId#
+            ORDER BY gmt_create DESC
+        ]]>
+	</select>
+	
+	<insert id="ADD_PROJECT" parameterClass="PROJECT">
+		<![CDATA[
+             INSERT INTO 
+            	project (project_name,project_customer,project_warehouse,project_cooper,project_business,project_enable,gmt_create) 
+            VALUES 
+            	(#projectName#,#projectCustomer#,#projectWareHouse#,#projectCooper#,#projectBusiness#,#projectEnable#,#gmtCreate#)
+        ]]>
+	</insert>
+	
+	<update id="UPDATE_PROJECT" parameterClass="PROJECT">
+		<![CDATA[
+             UPDATE 
+             	project
+             SET
+             	project_name = #projectName#,
+             	project_customer = #projectCustomer#,
+             	project_warehouse = #projectWareHouse#,
+             	project_cooper = #projectCooper#,
+             	project_business = #projectBusiness#,
+             	project_enable = #projectEnable#
+             WHERE
+             	project_id = #projectId#
+        ]]>
+	</update>
+	
+	
+
+</sqlMap>

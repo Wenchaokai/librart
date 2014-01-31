@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="priviliegeSpace">
+
+	<typeAlias alias="PRIVILIEGE" type="com.best.domain.Priviliege" />
+
+	<resultMap class="PRIVILIEGE" id="ALL_PROPERTIES">
+		<result property="priviliegeId" column="priviliege_id" />
+		<result property="priviliegeName" column="priviliege_name" />
+		<result property="priviliegeIndex" column="priviliege_index" />
+	</resultMap>
+	
+	<select id="GET_ALL_PRIVILIEGE" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	priviliege
+        ]]>
+	</select>
+	
+	
+
+</sqlMap>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ldoItemSpace">
+
+	<typeAlias alias="LDOITEM" type="com.best.domain.wms.LdoItem" />
+
+	<resultMap class="LDOITEM" id="ALL_PROPERTIES">
+		<result property="id" column="id" />
+		<result property="version" column="version" />
+		<result property="createTime" column="create_time" />
+		<result property="lastUpdateTime" column="last_update_time" />
+		<result property="ldoId" column="ldo_id" />
+		<result property="manufacturerCode" column="manufacturer_code" />
+		<result property="skuCode" column="sku_code" />
+		<result property="skuDescrC" column="sku_descr_c" />
+		<result property="packCode" column="pack_code" />
+		<result property="uomCode" column="uom_code" />
+		<result property="orderLineNo" column="order_line_no" />
+		<result property="fixStatusCode" column="fix_status_code" />
+		<result property="fixCreatedTime" column="fix_created_time" />
+		<result property="fixExpiredTime" column="fix_expired_time" />
+		<result property="lotAtt01" column="lot_att01" />
+		<result property="lotAtt02" column="lot_att02" />
+		<result property="lotAtt03" column="lot_att03" />
+		<result property="lotAtt04" column="lot_att04" />
+		<result property="lotAtt05" column="lot_att05" />
+		<result property="lotAtt06" column="lot_att06" />
+		<result property="lotAtt07" column="lot_att07" />
+		<result property="lotAtt08" column="lot_att08" />
+		<result property="lotAtt09" column="lot_att09" />
+		<result property="lotAtt10" column="lot_att10" />
+		<result property="lotAtt11" column="lot_att11" />
+		<result property="lotAtt12" column="lot_att12" />
+		<result property="pickZoneCode" column="pick_zone_code" />
+		<result property="picLocationCode" column="pic_location_code" />
+		<result property="shippedLocationCode" column="shipped_location_code" />
+		<result property="traceCode" column="trace_code" />
+		<result property="rulRotationHeaderCode" column="rul_rotation_header_code" />
+		<result property="reMark" column="re_mark" />
+		<result property="statusCode" column="status_code" />
+		<result property="udf1" column="udf1" />
+		<result property="udf2" column="udf2" />
+		<result property="udf3" column="udf3" />
+		<result property="udf4" column="udf4" />
+		<result property="udf5" column="udf5" />
+		<result property="udf6" column="udf6" />
+		<result property="udf7" column="udf7" />
+		<result property="udf8" column="udf8" />
+		<result property="qtyOrdered" column="qty_ordered" />
+		<result property="cubic" column="cubic" />
+		<result property="grossWeight" column="gross_weight" />
+		<result property="netWeight" column="net_weight" />
+		<result property="price" column="price" />
+	</resultMap>
+	
+	<select id="GET_DATA" parameterClass="java.util.Map" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+			SELECT a.id,a.version,to_char(a.CREATE_TIME,'yyyyMMdd') AS create_time,a.last_update_time,a.ldo_id,a.manufacturer_code,a.sku_code,a.sku_descr_c,a.pack_code,a.uom_code,a.order_line_no,a.fix_status_code,a.fix_created_time,a.fix_expired_time,a.lot_att01,a.lot_att02,a.lot_att03,a.lot_att04,a.lot_att05,a.lot_att06,a.lot_att07,a.lot_att08,a.lot_att09,a.lot_att10,a.lot_att11,a.lot_att12,a.pick_zone_code,a.pic_location_code,a.shipped_location_code,a.trace_code,a.rul_rotation_header_code,a.re_mark,a.status_code,a.udf1,a.udf2,a.udf3,a.udf4,a.udf5,a.udf6,a.udf7,a.udf8,a.qty_ordered,a.cubic,a.gross_weight,a.net_weight,a.price
+			FROM ECBOSS_LDO_ITEM a
+			WHERE
+			a.LDO_ID in (
+				SELECT 
+					ID
+				FROM 
+					ECBOSS_LDO
+				WHERE 
+					CUSTOMER_CODE=#customerCode# 
+				AND 
+					WH_CODE=#warehouseCode#
+				AND
+					CREATE_TIME>=to_date(#startTime#,'yyyyMMdd')
+				AND 
+					CREATE_TIME<=to_date(#endTime#,'yyyyMMdd')						
+			)
+		]]>
+	</select>
+
+</sqlMap>

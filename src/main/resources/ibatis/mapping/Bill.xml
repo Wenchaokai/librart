@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="billSpace">
+
+	<typeAlias alias="BILL" type="com.best.domain.Bill" />
+
+	<resultMap class="BILL" id="ALL_PROPERTIES">
+		<result property="billId" column="bill_id" />
+		<result property="billProjectId" column="bill_project_id" />
+		<result property="billProjectName" column="project_name" />
+		<result property="billStartTime" column="bill_start_time" />
+		<result property="billEndTime" column="bill_end_time" />
+		<result property="billProgress" column="bill_progress" />
+		<result property="billSubmitTime" column="bill_submit_time" />
+		<result property="gmtCreator" column="gmt_creator" />
+		<result property="gmtCreatorName" column="user_name" />
+		<result property="billSum" column="bill_sum" />
+		<result property="billStatus" column="bill_status" />
+		<result property="billName" column="bill_name" />
+		<result property="billBelongTime" column="bill_belong_time" />
+	</resultMap>
+	
+	<resultMap class="BILL" id="ALL_PROJECT_PROPERTIES">
+		<result property="billId" column="bill_id" />
+		<result property="billProjectId" column="bill_project_id" />
+		<result property="billProjectName" column="project_name" />
+		<result property="billStartTime" column="bill_start_time" />
+		<result property="billEndTime" column="bill_end_time" />
+		<result property="billProgress" column="bill_progress" />
+		<result property="billSubmitTime" column="bill_submit_time" />
+		<result property="gmtCreator" column="gmt_creator" />
+		<result property="gmtCreatorName" column="user_name" />
+		<result property="billSum" column="bill_sum" />
+		<result property="billStatus" column="bill_status" />
+		<result property="billName" column="bill_name" />
+		<result property="projectCustomer" column="project_customer" />
+		<result property="projectWareHouse" column="project_warehouse" />
+		<result property="billBelongTime" column="bill_belong_time" />
+	</resultMap>
+	
+	<select id="GET_ALL_BILL" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name,user_name
+            FROM 
+            	bill a LEFT JOIN project b on a.bill_project_id=b.project_id LEFT JOIN users c ON a.gmt_creator=c.user_id
+            ORDER BY bill_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_ALL_BILL_NON_FINISH" parameterClass="java.lang.String" resultMap="ALL_PROJECT_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name,user_name,project_customer,project_warehouse
+            FROM 
+            	bill a LEFT JOIN project b on a.bill_project_id=b.project_id LEFT JOIN users c ON a.gmt_creator=c.user_id
+            WHERE bill_progress<100 AND bill_status=0 AND bill_end_time<#endTime#
+            ORDER BY bill_id DESC
+            LIMIT 10
+        ]]>
+	</select>
+	
+	<select id="GET_BILL" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	a.*,project_name,user_name
+            FROM 
+            	bill a LEFT JOIN project b on a.bill_project_id=b.project_id LEFT JOIN users c ON a.gmt_creator=c.user_id
+            WHERE bill_id = #billId#
+        ]]>
+	</select>
+	
+	<insert id="ADD_BILL" parameterClass="BILL">
+		<![CDATA[
+             INSERT INTO 
+            	bill (bill_project_id,bill_start_time,bill_end_time,bill_name,bill_belong_time,bill_submit_time,gmt_creator) 
+            VALUES 
+            	(#billProjectId#,#billStartTime#,#billEndTime#,#billName#,#billBelongTime#,#billSubmitTime#,#gmtCreator#)
+        ]]>
+	</insert>
+	
+	<delete id="DELETE_BILL" parameterClass="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM bill
+			WHERE bill_id = #billId#
+		]]>
+	</delete>
+	
+	
+	<update id="UPDATE_BILL" parameterClass="BILL">
+		<![CDATA[
+			UPDATE 
+				BILL
+			SET 
+				bill_progress = #billProgress#,
+				bill_status = #billStatus#,
+				bill_sum = #billSum#
+			WHERE bill_id = #billId#
+		]]>
+	</update>
+	
+
+</sqlMap>

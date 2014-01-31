@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="fieldSpace">
+
+	<typeAlias alias="FIELD" type="com.best.domain.Field" />
+
+	<resultMap class="FIELD" id="ALL_PROPERTIES">
+		<result property="fieldId" column="field_id" />
+		<result property="fieldName" column="field_name" />
+		<result property="fieldUnit" column="field_unit" />
+		<result property="fieldPeriod" column="field_period" />
+		<result property="fieldDesc" column="field_desc" />
+		<result property="fieldType" column="field_type" />
+		<result property="fieldTypeName" column="field_type_name" />
+		<result property="fieldTypeMapping" column="field_type_mapping" />
+		<result property="fieldTypeBaobiaoType" column="field_type_baobiao_type" />
+		<result property="fieldTypeBaobiaoMapping" column="field_type_baobiao_mapping" />
+		<result property="fieldTypeBaobiaoMappingKey" column="field_type_baobiao_mapping_key" />
+	</resultMap>
+	
+	<select id="GET_ALL_FIELD" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	field
+            where field_type=#fieldType#
+            ORDER BY field_id DESC
+        ]]>
+	</select>
+	
+	<select id="GET_FIELD" parameterClass="java.lang.Integer" resultMap="ALL_PROPERTIES">
+		<![CDATA[
+            SELECT
+            	*
+            FROM 
+            	field
+            WHERE
+            	field_id =#fieldId#
+            ORDER BY field_id DESC
+        ]]>
+	</select>
+	
+	<insert id="ADD_FIELD" parameterClass="FIELD">
+		<![CDATA[
+             INSERT INTO 
+            	field (field_name,field_unit,field_period,field_desc,field_type,field_type_name) 
+            VALUES 
+            	(#fieldName#,#fieldUnit#,#fieldPeriod#,#fieldDesc#,#fieldType#,#fieldTypeName#)
+        ]]>
+	</insert>
+	
+	<update id="UPDATE_FIELD" parameterClass="FIELD">
+		<![CDATA[
+             UPDATE 
+             	field
+             SET
+             	field_name = #fieldName#,
+             	field_unit = #fieldUnit#,
+             	field_period = #fieldPeriod#,
+             	field_desc = #fieldDesc#,
+             	field_type = #fieldType#,
+             	field_type_name = #fieldTypeName#
+             WHERE
+             	field_id = #fieldId#
+        ]]>
+	</update>
+	
+	
+
+</sqlMap>
